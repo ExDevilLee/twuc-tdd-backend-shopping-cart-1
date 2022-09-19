@@ -15,13 +15,17 @@ public class ShoppingCartService {
     private final ProductRepository productRepository;
 
     public ShoppingCartResponse showShoppingCart() {
-        List<Product> products = productRepository.findAll();
-
-        BigDecimal totalPrice = BigDecimal.ZERO;
-
         return ShoppingCartResponse.builder()
-                .products(products)
-                .totalPrice(totalPrice)
+                .products(productRepository.findAll())
+                .totalPrice(calcTotalPrice(productRepository.findAll()))
                 .build();
+    }
+
+    private static BigDecimal calcTotalPrice(List<Product> products) {
+        BigDecimal totalPrice = BigDecimal.ZERO;
+        for (Product product : products) {
+            totalPrice = totalPrice.add(product.getPrice());
+        }
+        return totalPrice;
     }
 }
